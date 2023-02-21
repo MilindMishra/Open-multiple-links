@@ -1,0 +1,38 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+# define the values you want to enter in the text field
+value_to_enter = "Hello, world!"
+
+# define the list of URLs you want to open
+urls = ["https://www.google.com", "https://www.example.com", "https://www.github.com"]
+
+# define the list of login credentials for each URL
+login_credentials = [
+    {"url": "https://www.google.com", "username": "user1", "password": "password1"},
+    {"url": "https://www.example.com", "username": "user2", "password": "password2"},
+    {"url": "https://www.github.com", "username": "user3", "password": "password3"}
+]
+
+# loop through each URL and login credentials and open a separate instance of Google Chrome for each
+for i in range(len(urls)):
+    url = urls[i]
+    login = login_credentials[i]
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-data-dir=selenium")  # use an existing Chrome user profile to stay logged in
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+
+    # log in to the website using the given credentials
+    username_field = driver.find_element_by_name("username")
+    username_field.send_keys(login["username"])
+    password_field = driver.find_element_by_name("password")
+    password_field.send_keys(login["password"])
+    password_field.send_keys(Keys.RETURN)
+
+    # enter the value in the text field in all open Chrome browsers
+    text_field = driver.find_element_by_name("text_field_name")
+    text_field.send_keys(value_to_enter)
+
+# close all the open Chrome browsers
+driver.quit()
